@@ -1,42 +1,37 @@
 const formLapor = document.getElementById('formLapor');
 
-formLapor.addEventListener('submit', (e) => {
-    e.preventDefault(); // Mencegah halaman refresh
-
-    // Mengambil nilai dari form
-    const nama = document.getElementById('namaBarang').value;
-    const deskripsi = document.getElementById('deskripsi').value;
-    const lokasi = document.getElementById('lokasi').value;
-    const fotoFile = document.getElementById('fotoBarang').files[0];
-
-    // Fungsi internal untuk menyimpan data
-    const prosesSimpan = (fotoBase64 = '') => {
-        const barangBaru = {
-            id: Date.now(),
-            nama: nama,
-            deskripsi: deskripsi,
-            lokasi: lokasi,
-            foto: fotoBase64,
-            status: 'Proses'
-        };
-
-        // Memanggil array dari app.js
-        daftarBarang.push(barangBaru);
-        simpanData(); // Memanggil fungsi dari app.js
-        renderBarang(); // Memanggil fungsi dari app.js
+if (formLapor) {
+    formLapor.addEventListener('submit', async (e) => {
+        e.preventDefault();
         
-        formLapor.reset(); // Kosongkan form
-        alert('Laporan berhasil dikirim!');
-    };
+        const emailPelapor = localStorage.getItem('userEmail') || 'Anonim';
+        const fileFoto = document.getElementById('fotoBarang').files[0];
 
-    // Logika Upload Foto
-    if (fotoFile) {
-        const reader = new FileReader();
-        reader.onload = (event) => {
-            prosesSimpan(event.target.result); // Mengubah gambar jadi teks
+        const prosesSimpan = async (fotoBase64 = '') => {
+            const barangBaru = {
+                id: Date.now(), 
+                nama: document.getElementById('namaBarang').value,
+                deskripsi: document.getElementById('deskripsi').value,
+                lokasi: document.getElementById('lokasi').value,
+                foto: fotoBase64,
+                status: 'Proses',
+                pelapor: emailPelapor
+            };
+
+            // Panggil fungsi Firebase dari index.html
+            if (window.simpanBarangKeFirebase) {
+                const sukses = await window.simpanBarangKeFirebase(barangBaru);
+                if (sukses) formLapor.reset();
+            }
         };
-        reader.readAsDataURL(fotoFile);
-    } else {
-        prosesSimpan();
-    }
-});
+
+        // Logika Upload Foto (sama seperti sebelumnya)
+        if (fileFoto) {
+            const reader = new FileReader();
+            reader.onload = (event) => prosesSimpan(event.target.result);
+            reader.readAsDataURL(fileFoto);
+        } else {
+            prosesSimpan();
+        }
+    });
+}
