@@ -4,10 +4,21 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login & Daftar - TEMUKAN</title>
-    <link rel="stylesheet" href="css/style.css">
+    
+    <!-- Font Awesome untuk Icon -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
+    <!-- CSS KHUSUS UNTUK HALAMAN LOGIN -->
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Nunito', sans-serif;
+        }
+
         body {
             display: flex;
             justify-content: center;
@@ -15,59 +26,142 @@
             min-height: 100vh;
             background: linear-gradient(135deg, #e0eaff 0%, #f4f7fb 100%);
         }
+
         .login-box {
             background: white;
             padding: 40px;
-            border-radius: 10px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
             width: 100%;
             max-width: 400px;
         }
+
         .login-box h2 {
             text-align: center;
             color: #1a56db;
             margin-bottom: 25px;
+            font-weight: 800;
+            font-size: 24px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
         }
+
         .tabs {
             display: flex;
-            margin-bottom: 20px;
+            margin-bottom: 25px;
             border-bottom: 2px solid #e2e8f0;
         }
+
         .tabs button {
             flex: 1;
-            padding: 10px;
+            padding: 12px;
             border: none;
             background: none;
             cursor: pointer;
-            font-weight: bold;
+            font-weight: 800;
             color: #64748b;
-            font-size: 16px;
+            font-size: 15px;
+            transition: 0.3s;
         }
+
         .tabs button.active {
             color: #1a56db;
             border-bottom: 3px solid #1a56db;
         }
+
         .form-container {
             display: none;
         }
+
         .form-container.active {
             display: block;
+            animation: fadeIn 0.3s ease;
         }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .input-group {
+            margin-bottom: 15px;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 700;
+            font-size: 13px;
+            color: #475569;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            font-size: 14px;
+            outline: none;
+            transition: 0.3s;
+            background-color: #f8fafc;
+        }
+
+        .input-group input:focus {
+            border-color: #1a56db;
+            background-color: #fff;
+            box-shadow: 0 0 0 3px rgba(26, 86, 219, 0.1);
+        }
+
+        .btn-kirim {
+            width: 100%;
+            background-color: #1a56db;
+            color: white;
+            border: none;
+            padding: 14px;
+            border-radius: 8px;
+            font-weight: 800;
+            font-size: 15px;
+            cursor: pointer;
+            transition: 0.3s;
+            margin-top: 10px;
+        }
+
+        .btn-kirim:hover {
+            background-color: #1545a8;
+            transform: translateY(-2px);
+        }
+
+        .btn-kirim.green {
+            background-color: #10b981;
+        }
+        .btn-kirim.green:hover {
+            background-color: #059669;
+        }
+
         .error-msg {
             color: #dc2626;
-            font-size: 14px;
-            margin-top: 10px;
+            font-size: 13px;
+            margin-top: 15px;
             text-align: center;
+            font-weight: 700;
         }
+
         .btn-back {
             display: block;
             text-align: center;
-            margin-top: 20px;
+            margin-top: 25px;
             color: #64748b;
             text-decoration: none;
             font-size: 14px;
+            font-weight: 700;
+            transition: 0.3s;
         }
-        .btn-back:hover { color: #1a56db; }
+
+        .btn-back:hover { 
+            color: #1a56db; 
+        }
     </style>
 </head>
 <body>
@@ -112,7 +206,7 @@
                     <label>Password (Min. 6 Karakter)</label>
                     <input type="password" id="regPassword" required placeholder="Buat password">
                 </div>
-                <button type="submit" class="btn-kirim" style="background-color: #10b981;">Daftar Sekarang</button>
+                <button type="submit" class="btn-kirim green">Daftar Sekarang</button>
                 <div id="regError" class="error-msg"></div>
             </form>
         </div>
@@ -120,26 +214,25 @@
         <a href="index.html" class="btn-back"><i class="fa-solid fa-arrow-left"></i> Kembali ke Beranda</a>
     </div>
 
-    <!-- Script Logika -->
+    <!-- Script Logika Firebase (Sama seperti sebelumnya) -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
         import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-        // Konfigurasi Firebase
         const firebaseConfig = {
-  apiKey: "AIzaSyB6wbESXwG1x43GCNUTyfYQ-X5KksiLnzE",
-  authDomain: "temukan-app-20b29.firebaseapp.com",
-  projectId: "temukan-app-20b29",
-  storageBucket: "temukan-app-20b29.firebasestorage.app",
-  messagingSenderId: "964187120219",
-  appId: "1:964187120219:web:3e62624f73ac896fd5957e"
-};
+            apiKey: "AIzaSyB6wbESXwG1x43GCNUTYfYQ-X5KksiLnzE",
+            authDomain: "temukan-app-20b29.firebaseapp.com",
+            projectId: "temukan-app-20b29",
+            storageBucket: "temukan-app-20b29.firebasestorage.app",
+            messagingSenderId: "964187120219",
+            appId: "1:964187120219:web:3e62624f73ac896fd5957e"
+        };
+
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getFirestore(app);
 
-        // Fungsi Ganti Tab
         window.switchTab = (tab) => {
             document.querySelectorAll('.tabs button').forEach(b => b.classList.remove('active'));
             document.querySelectorAll('.form-container').forEach(f => f.classList.remove('active'));
@@ -153,7 +246,6 @@
             }
         };
 
-        // Logika Login
         document.getElementById('formLogin').addEventListener('submit', (e) => {
             e.preventDefault();
             const email = document.getElementById('loginEmail').value;
@@ -162,15 +254,14 @@
 
             signInWithEmailAndPassword(auth, email, pass)
                 .then((user) => {
-                    localStorage.setItem('userEmail', user.user.email); // Simpan sesi login
-                    window.location.href = 'index.html'; // Arahkan ke beranda
+                    localStorage.setItem('userEmail', user.user.email); 
+                    window.location.href = 'index.html'; 
                 })
                 .catch((error) => {
                     errDiv.innerText = "Email atau Password salah!";
                 });
         });
 
-        // Logika Register
         document.getElementById('formRegister').addEventListener('submit', async (e) => {
             e.preventDefault();
             const name = document.getElementById('regName').value;
@@ -179,10 +270,7 @@
             const errDiv = document.getElementById('regError');
 
             try {
-                // 1. Buat Akun
                 const userCred = await createUserWithEmailAndPassword(auth, email, pass);
-                
-                // 2. Simpan Nama ke Database Firestore
                 await setDoc(doc(db, "users", userCred.user.uid), {
                     nama: name,
                     email: email,
