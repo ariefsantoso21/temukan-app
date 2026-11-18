@@ -1,11 +1,8 @@
-    <!-- KODE BARU UNTUK LOGIN FIREBASE -->
+    <!-- KODE BARU UNTUK INDEX FIREBASE -->
     <script type="module">
-        // Import fungsi Firebase
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-        import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, onSnapshot, query, orderBy } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-        // Konfigurasi Firebase Anda
         const firebaseConfig = {
             apiKey: "AIzaSyB6wbESXwG1x43GCNUTYfYQ-X5KksiLnzE",
             authDomain: "temukan-app-20b29.firebaseapp.com",
@@ -15,55 +12,74 @@
             appId: "1:964187120219:web:3e62624f73ac896fd5957e"
         };
 
-        // Inisialisasi Firebase
         const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
         const db = getFirestore(app);
 
-        // LOGIKA LOGIN
-        document.getElementById('formLogin').addEventListener('submit', (e) => {
-            e.preventDefault();
-            const email = document.getElementById('loginEmail').value;
-            const password = document.getElementById('loginPassword').value;
-
-            signInWithEmailAndPassword(auth, email, password)
-                .then((userCredential) => {
-                    const user = userCredential.user;
-                    // Simpan email untuk keperluan tampilan di halaman utama
-                    localStorage.setItem('userEmail', user.email); 
-                    alert(`Login berhasil! Selamat datang.`);
-                    window.location.href = 'index.html';
-                })
-                .catch((error) => {
-                    document.getElementById('loginError').innerText = "Email atau Password salah!";
-                });
-        });
-
-        // LOGIKA DAFTAR
-        document.getElementById('formRegister').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const name = document.getElementById('regName').value;
-            const email = document.getElementById('regEmail').value;
-            const password = document.getElementById('regPassword').value;
-
+        // Fungsi Global agar bisa dipanggil dari form.js
+        window.simpanBarangKeFirebase = async (dataBarang) => {
             try {
-                // 1. Buat akun di Authentication
-                const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-                const user = userCredential.user;
-
-                // 2. Simpan data nama ke Database Firestore
-                await setDoc(doc(db, "users", user.uid), {
-                    nama: name,
-                    email: email,
-                    role: "anggota" // Default role
-                });
-
-                alert('Pendaftaran berhasil! Silakan login.');
-                if(typeof switchTab === 'function') switchTab('login');
-            } catch (error) {
-                alert('Gagal daftar: ' + error.message);
+                await addDoc(collection(db, "laporan_barang"), dataBarang);
+                alert('Laporan berhasil dikirim ke database Firebase!');
+                return true;
+            } catch (e) {
+                console.error("Error: ", e);
+                alert('Gagal mengirim laporan.');
+                return false;
             }
+        };
+
+        // Tampilkan Data secara Real-time
+        const q = query(collection(db, "laporan_barang"), orderBy("id", "desc"));
+        const listBarangContainer = document.getElementById('listBarang');
+
+        onSnapshot(q, (snapshot) => {
+            listBarangContainer.innerHTML = '';
+            if (snapshot.empty) {
+                listBarangContainer.innerHTML = '<p style="text-align:center; color:#94a3b8;">Belum ada laporan barang.</p>';
+                return;
+            }
+            
+            snapshot.forEach((doc) => {
+                const barang = doc.data();
+                
+                // Format Tampilan (Sama seperti sebelumnya)
+                const tanggal = new Date(barang.id).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' });
+                const imgContent = barang.foto ? `<img src="${barang.foto}" class="barang-img">` : `<div class="barang-img">📦</div>`;
+                const statusClass = barang.status === 'Ditemukan' ? 'status-ditemukan' : 'status-proses';
+
+                listBarangContainer.innerHTML += `
+                    <div class="barang-item">
+                        ${imgContent}
+                        <div class="barang-info">
+                            <h3>${barang.nama}</h3>
+                            <p>${barang.deskripsi}</p>
+                            <p><i class="fa-solid fa-location-dot"></i> ${barang.lokasi}</p>
+                            <p><small>${tanggal}</small></p>
+                        </div>
+                        <span class="status ${statusClass}">${barang.status}</span>
+                    </div>
+                `;
+            });
         });
+
+        // Cek Login
+        const authArea = document.getElementById('authArea');
+        const formLaporSection = document.getElementById('lapor');
+        const pesanLoginSection = document.getElementById('pesanLogin');
+        const userEmail = localStorage.getItem('userEmail');
+
+        if (userEmail) {
+            authArea.innerHTML = `
+                <span style="margin-right: 10px; font-weight: bold; color: #1a56db;">
+                    <i class="fa-solid fa-user"></i> ${userEmail}
+                </span>
+                <button onclick="localStorage.removeItem('userEmail'); location.reload();" class="btn-login" style="background-color: #ef4444;">Logout</button>
+            `;
+            if(formLaporSection) formLaporSection.style.display = 'block';
+            if(pesanLoginSection) pesanLoginSection.style.display = 'none';
+        } else {
+            if(formLaporSection) formLaporSection.style.display = 'none';
+            if(pesanLoginSection) pesanLoginSection.style.display = 'block';
+        }
     </script>
-    
-    <!-- HAPUS <script src="js/auth.js"></script> LAMA -->
+    <script src="js/form.js"></script>
