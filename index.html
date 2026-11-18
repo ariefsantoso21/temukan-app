@@ -1,3 +1,4 @@
+Body
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -25,231 +26,158 @@
     <!-- NAVBAR -->
     <nav class="navbar">
         <div class="logo">
-            <i class="fa-solid fa-magnifying-glass"></i> TEMUKAN
+            <i class="fa-solid fa-magnifying-glass" style="color: #1a56db;"></i> TEMUKAN
         </div>
         <ul class="nav-links">
-            <li><a href="index.html">Beranda</a></li>
+            <li><a href="index.html" class="active">Beranda</a></li>
+            <li><a href="#lapor">Lapor Barang</a></li>
             <li><a href="#daftar">Cari Barang</a></li>
-            <li id="menuAdmin" class="hidden"><a href="dashboard.html">Dashboard Admin</a></li>
+            <li><a href="#tentang">Tentang</a></li>
         </ul>
-        
-        <!-- Area Login / Profil -->
-        <div id="authArea">
-            <a href="login.html" class="btn-login">Login / Daftar</a>
-        </div>
+        <a href="login.html" class="btn-login">Login</a>
     </nav>
 
-    <!-- HERO SECTION -->
-    <header id="beranda" class="hero">
-        <div class="hero-text">
-            <h1>TEMUKAN</h1>
-            <h2>Sistem Barang Hilang</h2>
-            <p>Cari, Laporkan, dan Temukan Barang dengan Mudah!</p>
-            <div class="search-bar">
-                <input type="text" id="searchInput" placeholder="Cari barang (misal: tas, HP, dompet...)">
-                <button id="searchBtn"><i class="fa-solid fa-magnifying-glass"></i></button>
-            </div>
-        </div>
-        <div class="hero-image">
-            <div class="ilustrasi-tas">🎒</div>
-        </div>
-    </header>
-
-    <!-- MAIN CONTENT -->
-    <main class="container">
+    <!-- MAIN CONTAINER (Grid Utama) -->
+    <main class="main-wrapper">
         
-        <!-- FORM LAPOR (KIRI) -->
-        <section id="lapor" class="form-section hidden">
-            <h2><i class="fa-solid fa-bullhorn"></i> Lapor Barang</h2>
-            <form id="formLapor">
-                <div class="input-group">
-                    <label for="namaBarang">Nama Barang *</label>
-                    <input type="text" id="namaBarang" required placeholder="Contoh: Tas Sekolah">
+        <!-- KIRI: Panel Info -->
+        <aside class="info-panel">
+            <!-- Card Tentang Produk -->
+            <div class="card card-blue-header">
+                <div class="card-header"><i class="fa-solid fa-lightbulb"></i> Tentang Produk</div>
+                <div class="card-body">
+                    <p><strong>TEMUKAN</strong> adalah aplikasi web untuk melaporkan barang hilang dan menemukan barang yang ditemukan di lingkungan sekolah. Aplikasi ini memudahkan siswa, guru, dan staf sekolah dalam berbagi informasi barang hilang maupun ditemukan.</p>
                 </div>
-                <div class="input-group">
-                    <label for="deskripsi">Deskripsi *</label>
-                    <textarea id="deskripsi" required placeholder="Contoh: Tas warna hitam, ada logo SMP"></textarea>
-                </div>
-                <div class="input-group">
-                    <label for="lokasi">Lokasi Terakhir *</label>
-                    <input type="text" id="lokasi" required placeholder="Contoh: Ruang Kelas 10 IPA 1">
-                </div>
-                <div class="input-group">
-                    <label for="fotoBarang">Upload Foto (Opsional)</label>
-                    <input type="file" id="fotoBarang" accept="image/*">
-                </div>
-                <button type="submit" id="btnKirim" class="btn-kirim"><i class="fa-solid fa-paper-plane"></i> Kirim Laporan</button>
-            </form>
-        </section>
-
-        <!-- PESAN JIKA BELUM LOGIN -->
-        <section id="pesanLogin" class="form-section" style="border-top: 5px solid #f59e0b;">
-            <h2><i class="fa-solid fa-lock"></i> Ingin Melapor?</h2>
-            <p style="margin-bottom: 20px;">Anda harus login terlebih dahulu untuk melaporkan barang hilang atau ditemukan.</p>
-            <a href="login.html" class="btn-kirim" style="display: block; text-align: center; text-decoration: none; background-color: #f59e0b;">Login Sekarang</a>
-        </section>
-
-        <!-- DAFTAR BARANG (KANAN) -->
-        <section id="daftar" class="daftar-section">
-            <h2><i class="fa-solid fa-list"></i> Daftar Laporan Barang</h2>
-            <div class="search-local">
-                <input type="text" id="searchLocalInput" placeholder="Cari di daftar...">
             </div>
-            <div id="listBarang" class="list-barang">
-                <p class="loading-text">Memuat data dari server...</p>
+
+            <!-- Card Fitur Utama -->
+            <div class="card card-blue-header mt-20">
+                <div class="card-header"><i class="fa-solid fa-star"></i> Fitur Utama</div>
+                <div class="card-body">
+                    <ul class="feature-list">
+                        <li><i class="fa-solid fa-circle-check text-green"></i> Lapor barang hilang atau ditemukan</li>
+                        <li><i class="fa-solid fa-circle-check text-green"></i> Cari barang dengan kata kunci</li>
+                        <li><i class="fa-solid fa-circle-check text-green"></i> Lihat status laporan (proses / ditemukan)</li>
+                        <li><i class="fa-solid fa-circle-check text-green"></i> Upload foto barang</li>
+                        <li><i class="fa-solid fa-circle-check text-green"></i> Notifikasi terbaru</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Card Kelebihan -->
+            <div class="card card-green-header mt-20">
+                <div class="card-header"><i class="fa-solid fa-thumbs-up"></i> Kelebihan</div>
+                <div class="card-body">
+                    <ul class="feature-list">
+                        <li><i class="fa-solid fa-circle-check text-green"></i> Mudah digunakan dan tampilan menarik</li>
+                        <li><i class="fa-solid fa-circle-check text-green"></i> Solusi masalah nyata di sekolah</li>
+                        <li><i class="fa-solid fa-circle-check text-green"></i> Responsif (bisa diakses HP/PC)</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Card Teknologi -->
+            <div class="card card-blue-header mt-20">
+                <div class="card-header"><i class="fa-solid fa-gear"></i> Teknologi yang Digunakan</div>
+                <div class="card-body tech-logos">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/6/61/HTML5_logo_and_wordmark.svg" alt="HTML">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/d/d5/CSS3_logo_and_wordmark.svg" alt="CSS">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/6/6a/JavaScript-logo.png" alt="JS">
+                    <img src="https://assets.vercel.com/image/upload/v1588805858/repositories/vercel/logo.png" alt="Vercel">
+                </div>
+            </div>
+        </aside>
+
+        <!-- KANAN: Area Utama -->
+        <section class="main-content">
+            
+            <!-- Banner Hero -->
+            <div class="hero-banner">
+                <div class="hero-text">
+                    <h1>TEMUKAN</h1>
+                    <h2>Sistem Barang Hilang</h2>
+                    <p>Cari, Laporkan, dan Temukan Barang dengan Mudah!</p>
+                    <div class="search-bar">
+                        <input type="text" id="searchInput" placeholder="Cari barang (misal: tas, HP, dompet...)">
+                        <button id="searchBtn"><i class="fa-solid fa-magnifying-glass"></i></button>
+                    </div>
+                </div>
+                <div class="hero-graphic">
+                    <!-- Gunakan gambar ilustrasi asli di sini, untuk sementara pakai emoji -->
+                    <div style="font-size: 120px; text-align: center;">🎒📱</div>
+                </div>
+            </div>
+
+            <!-- Grid Bawah (Form & Daftar) -->
+            <div class="action-grid">
+                
+                <!-- Kolom Form -->
+                <div id="lapor" class="card card-dark-blue-header hidden">
+                    <div class="card-header">Lapor Barang Hilang</div>
+                    <div class="card-body">
+                        <form id="formLapor" style="display: flex; gap: 15px;">
+                            <!-- Area Foto (Kiri) -->
+                            <div class="photo-upload" style="width: 100px;">
+                                <label for="fotoBarang" style="cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; background: #f0f4f8; border: 2px dashed #cbd5e1; border-radius: 8px;">
+                                    <span style="font-size: 30px;">🎒</span>
+                                    <small style="font-size: 10px; text-align: center; margin-top: 5px;">Upload<br>Foto</small>
+                                </label>
+                                <input type="file" id="fotoBarang" accept="image/*" style="display: none;">
+                            </div>
+                            
+                            <!-- Area Input (Kanan) -->
+                            <div style="flex: 1; display: flex; flex-direction: column; gap: 10px;">
+                                <div>
+                                    <label style="font-size: 12px;">Nama Barang *</label>
+                                    <input type="text" id="namaBarang" required placeholder="Tas Sekolah" style="width: 100%; padding: 8px; border: 1px solid #cbd5e1; border-radius: 5px;">
+                                </div>
+                                <div>
+                                    <label style="font-size: 12px;">Deskripsi *</label>
+                                    <input type="text" id="deskripsi" required placeholder="Tas warna hitam, ada logo SMP" style="width: 100%; padding: 8px; border: 1px solid #cbd5e1; border-radius: 5px;">
+                                </div>
+                                <div>
+                                    <label style="font-size: 12px;">Lokasi Terakhir *</label>
+                                    <input type="text" id="lokasi" required placeholder="Ruang Kelas 10 IPA 1" style="width: 100%; padding: 8px; border: 1px solid #cbd5e1; border-radius: 5px;">
+                                </div>
+                            </div>
+                        </form>
+                        <button type="submit" form="formLapor" id="btnKirim" class="btn-kirim" style="margin-top: 15px; width: 100%; background: #2563eb; color: white; padding: 10px; border: none; border-radius: 5px; font-weight: bold; cursor: pointer;">
+                            <i class="fa-solid fa-paper-plane"></i> Kirim Laporan
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Pesan Login -->
+                <div id="pesanLogin" class="card card-dark-blue-header">
+                    <div class="card-header">Lapor Barang Hilang</div>
+                    <div class="card-body" style="text-align: center; padding: 30px 20px;">
+                        <i class="fa-solid fa-lock" style="font-size: 40px; color: #f59e0b; margin-bottom: 15px;"></i>
+                        <p style="margin-bottom: 20px;">Anda harus login terlebih dahulu untuk melaporkan barang.</p>
+                        <a href="login.html" class="btn-login" style="display: block; background: #f59e0b;">Login Sekarang</a>
+                    </div>
+                </div>
+
+                <!-- Kolom Daftar Barang -->
+                <div id="daftar" class="card card-dark-blue-header">
+                    <div class="card-header" style="display: flex; justify-content: space-between; align-items: center;">
+                        <span>Daftar Laporan Barang</span>
+                        <input type="text" id="searchLocalInput" placeholder="Cari..." style="padding: 5px 10px; border-radius: 5px; border: none; font-size: 12px; width: 150px;">
+                    </div>
+                    <div class="card-body" id="listBarang">
+                        <!-- Data barang akan dimuat di sini oleh JS -->
+                        <p style="text-align:center; color:#94a3b8;">Memuat data...</p>
+                    </div>
+                </div>
+
             </div>
         </section>
-
     </main>
 
+    <!-- Footer -->
     <footer>
-        <p>&copy; 2026 TEMUKAN - Sistem Barang Hilang. Dibuat untuk Uzaa (SMAN 1 Madiun) 2026.</p>
+        <p>&copy; 2026 TEMUKAN - Sistem Barang Hilang. Dibuat untuk Latika 2026.</p>
     </footer>
 
-    <!-- ============================================== -->
-    <!-- SCRIPT FIREBASE & LOGIKA (Diletakkan di bawah) -->
-    <!-- ============================================== -->
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getFirestore, collection, addDoc, onSnapshot, query, orderBy } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
-
-        // Konfigurasi Firebase
-     const firebaseConfig = {
-  apiKey: "AIzaSyB6wbESXwG1x43GCNUTyfYQ-X5KksiLnzE",
-  authDomain: "temukan-app-20b29.firebaseapp.com",
-  projectId: "temukan-app-20b29",
-  storageBucket: "temukan-app-20b29.firebasestorage.app",
-  messagingSenderId: "964187120219",
-  appId: "1:964187120219:web:3e62624f73ac896fd5957e"
-};
-
-        const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
-
-        // Cek Status Login (Menggunakan localStorage sederhana)
-        const userEmail = localStorage.getItem('userEmail');
-        const authArea = document.getElementById('authArea');
-        const formLaporSection = document.getElementById('lapor');
-        const pesanLoginSection = document.getElementById('pesanLogin');
-
-        if (userEmail) {
-            authArea.innerHTML = `
-                <div class="user-badge">
-                    <span><i class="fa-solid fa-user-circle"></i> ${userEmail}</span>
-                    <button onclick="logout()" class="btn-logout">Logout</button>
-                </div>
-            `;
-            if(formLaporSection) formLaporSection.classList.remove('hidden');
-            if(pesanLoginSection) pesanLoginSection.classList.add('hidden');
-        } else {
-            if(formLaporSection) formLaporSection.classList.add('hidden');
-            if(pesanLoginSection) pesanLoginSection.classList.remove('hidden');
-        }
-
-        // Fungsi Logout
-        window.logout = () => {
-            localStorage.removeItem('userEmail');
-            alert('Anda telah logout.');
-            window.location.reload();
-        };
-
-        // Fitur Form Lapor
-        const formLapor = document.getElementById('formLapor');
-        if (formLapor) {
-            formLapor.addEventListener('submit', async (e) => {
-                e.preventDefault();
-                const btn = document.getElementById('btnKirim');
-                btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Mengirim...';
-                btn.disabled = true;
-
-                const emailPelapor = userEmail || 'Anonim';
-                const fileFoto = document.getElementById('fotoBarang').files[0];
-
-                const prosesSimpan = async (fotoBase64 = '') => {
-                    const barangBaru = {
-                        id: Date.now(), 
-                        nama: document.getElementById('namaBarang').value,
-                        deskripsi: document.getElementById('deskripsi').value,
-                        lokasi: document.getElementById('lokasi').value,
-                        foto: fotoBase64,
-                        status: 'Proses',
-                        pelapor: emailPelapor
-                    };
-
-                    try {
-                        await addDoc(collection(db, "laporan_barang"), barangBaru);
-                        alert('Laporan berhasil dikirim!');
-                        formLapor.reset();
-                    } catch (error) {
-                        console.error("Error: ", error);
-                        alert('Gagal mengirim laporan.');
-                    } finally {
-                        btn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Kirim Laporan';
-                        btn.disabled = false;
-                    }
-                };
-
-                if (fileFoto) {
-                    const reader = new FileReader();
-                    reader.onload = (event) => prosesSimpan(event.target.result);
-                    reader.readAsDataURL(fileFoto);
-                } else {
-                    prosesSimpan();
-                }
-            });
-        }
-
-        // Menampilkan Data Real-time
-        const listBarangContainer = document.getElementById('listBarang');
-        const q = query(collection(db, "laporan_barang"), orderBy("id", "desc"));
-
-        onSnapshot(q, (snapshot) => {
-            listBarangContainer.innerHTML = '';
-            if (snapshot.empty) {
-                listBarangContainer.innerHTML = '<p style="text-align:center; color:#94a3b8;">Belum ada laporan barang.</p>';
-                return;
-            }
-            
-            snapshot.forEach((doc) => {
-                const barang = doc.data();
-                const tanggal = new Date(barang.id).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' });
-                const imgContent = barang.foto ? `<img src="${barang.foto}" class="barang-img">` : `<div class="barang-img">📦</div>`;
-                const statusClass = barang.status === 'Ditemukan' ? 'status-ditemukan' : 'status-proses';
-
-                listBarangContainer.innerHTML += `
-                    <div class="barang-item">
-                        ${imgContent}
-                        <div class="barang-info">
-                            <h3>${barang.nama}</h3>
-                            <p>${barang.deskripsi}</p>
-                            <p><i class="fa-solid fa-location-dot"></i> ${barang.lokasi}</p>
-                            <p><small>Oleh: ${barang.pelapor}</small></p>
-                            <p><small>${tanggal}</small></p>
-                        </div>
-                        <span class="status ${statusClass}">${barang.status}</span>
-                    </div>
-                `;
-            });
-        });
-
-        // Fitur Pencarian
-        document.getElementById('searchBtn').addEventListener('click', () => {
-            const keyword = document.getElementById('searchInput').value;
-            document.getElementById('searchLocalInput').value = keyword;
-            document.getElementById('daftar').scrollIntoView({ behavior: 'smooth' });
-            const event = new Event('input');
-            document.getElementById('searchLocalInput').dispatchEvent(event);
-        });
-
-        document.getElementById('searchLocalInput').addEventListener('input', (e) => {
-            const keyword = e.target.value.toLowerCase();
-            const items = document.querySelectorAll('.barang-item');
-            
-            items.forEach(item => {
-                const text = item.innerText.toLowerCase();
-                item.style.display = text.includes(keyword) ? 'flex' : 'none';
-            });
-        });
-    </script>
+    <!-- Script Firebase (Tetap gunakan script yang sudah ada sebelumnya) -->
 </body>
 </html>
