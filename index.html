@@ -42,6 +42,27 @@
             width: 16px;
             height: 16px;
         }
+        
+        /* Styling Form Input */
+        .form-row { margin-bottom: 10px; }
+        .form-row label { font-size: 12px; font-weight: 600; color: #475569; margin-bottom: 4px; display: block; }
+        .form-row input, .form-row textarea { 
+            width: 100%; padding: 8px; border: 1px solid #cbd5e1; border-radius: 5px; font-family: inherit;
+        }
+        
+        /* Styling Tombol WhatsApp */
+        .btn-wa {
+            display: inline-block;
+            background-color: #25D366;
+            color: white !important;
+            padding: 4px 10px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-size: 11px;
+            font-weight: bold;
+            margin-top: 5px;
+        }
+        .btn-wa:hover { background-color: #1ebe57; }
     </style>
 </head>
 <body>
@@ -85,7 +106,7 @@
                         <li><i class="fa-solid fa-circle-check text-green"></i> Cari barang dengan kata kunci</li>
                         <li><i class="fa-solid fa-circle-check text-green"></i> Lihat status laporan (proses / ditemukan)</li>
                         <li><i class="fa-solid fa-circle-check text-green"></i> Upload foto barang</li>
-                        <li><i class="fa-solid fa-circle-check text-green"></i> Notifikasi terbaru</li>
+                        <li><i class="fa-solid fa-circle-check text-green"></i> Hubungi pelapor via WhatsApp</li>
                     </ul>
                 </div>
             </div>
@@ -155,7 +176,7 @@
                             <div style="display: flex; gap: 15px;">
                                 <!-- Area Foto (Kiri) -->
                                 <div class="photo-upload" style="width: 100px;">
-                                    <label for="fotoBarang" style="cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; background: #f0f4f8; border: 2px dashed #cbd5e1; border-radius: 8px;">
+                                    <label for="fotoBarang" style="cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; min-height: 150px; background: #f0f4f8; border: 2px dashed #cbd5e1; border-radius: 8px;">
                                         <span style="font-size: 30px;">🎒</span>
                                         <small style="font-size: 10px; text-align: center; margin-top: 5px;">Upload<br>Foto</small>
                                     </label>
@@ -163,23 +184,40 @@
                                 </div>
                                 
                                 <!-- Area Input (Kanan) -->
-                                <div style="flex: 1; display: flex; flex-direction: column; gap: 10px;">
-                                    <div>
-                                        <label style="font-size: 12px;">Nama Barang *</label>
-                                        <input type="text" id="namaBarang" required placeholder="Tas Sekolah" style="width: 100%; padding: 8px; border: 1px solid #cbd5e1; border-radius: 5px;">
+                                <div style="flex: 1; display: flex; flex-direction: column; gap: 8px;">
+                                    <div class="form-row">
+                                        <label>Nama Pelapor *</label>
+                                        <input type="text" id="namaPelapor" required placeholder="Nama Lengkap Anda">
                                     </div>
-                                    <div>
-                                        <label style="font-size: 12px;">Deskripsi *</label>
-                                        <input type="text" id="deskripsi" required placeholder="Tas warna hitam, ada logo SMP" style="width: 100%; padding: 8px; border: 1px solid #cbd5e1; border-radius: 5px;">
+                                    <div class="form-row">
+                                        <label>Nomor WhatsApp *</label>
+                                        <input type="tel" id="noHp" required placeholder="Contoh: 08123456789">
                                     </div>
-                                    <div>
-                                        <label style="font-size: 12px;">Lokasi Terakhir *</label>
-                                        <input type="text" id="lokasi" required placeholder="Ruang Kelas 10 IPA 1" style="width: 100%; padding: 8px; border: 1px solid #cbd5e1; border-radius: 5px;">
+                                    <div class="form-row">
+                                        <label>Nama Barang *</label>
+                                        <input type="text" id="namaBarang" required placeholder="Tas Sekolah">
                                     </div>
                                 </div>
                             </div>
+                            
+                            <div style="display: flex; gap: 10px; margin-top: 8px;">
+                                <div class="form-row" style="flex: 1;">
+                                    <label>Tanggal Kejadian *</label>
+                                    <input type="date" id="tanggalKejadian" required>
+                                </div>
+                                <div class="form-row" style="flex: 1;">
+                                    <label>Lokasi Terakhir *</label>
+                                    <input type="text" id="lokasi" required placeholder="Ruang Kelas 10 IPA 1">
+                                </div>
+                            </div>
+                            
+                            <div class="form-row">
+                                <label>Deskripsi / Ciri-ciri *</label>
+                                <input type="text" id="deskripsi" required placeholder="Tas warna hitam, ada logo SMP">
+                            </div>
+
                         </form>
-                        <button type="submit" form="formLapor" id="btnKirim" class="btn-kirim" style="margin-top: 15px; width: 100%; background: #2563eb; color: white; padding: 10px; border: none; border-radius: 5px; font-weight: bold; cursor: pointer;">
+                        <button type="submit" form="formLapor" id="btnKirim" class="btn-kirim" style="margin-top: 10px; width: 100%; background: #2563eb; color: white; padding: 10px; border: none; border-radius: 5px; font-weight: bold; cursor: pointer;">
                             <i class="fa-solid fa-paper-plane"></i> Kirim Laporan
                         </button>
                     </div>
@@ -282,12 +320,26 @@
             
             snapshot.forEach((doc) => {
                 const barang = doc.data();
-                const tanggal = new Date(barang.id).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' });
+                
+                // Format Tanggal Lapor
+                const tglLapor = new Date(barang.id).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' });
+                
+                // Format Tanggal Kejadian (jika ada)
+                let tglKejadian = '-';
+                if(barang.tanggalKejadian) {
+                    tglKejadian = new Date(barang.tanggalKejadian).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' });
+                }
+
                 const imgContent = barang.foto ? `<img src="${barang.foto}" class="barang-img">` : `<div class="barang-img">📦</div>`;
                 const statusClass = barang.status === 'Ditemukan' ? 'status-ditemukan' : 'status-proses';
-                
-                // Tentukan warna label jenis laporan
                 const jenisClass = barang.jenis === 'Ditemukan' ? 'status-ditemukan' : 'status-proses';
+                
+                // Link WhatsApp (Ganti angka 0 di depan jadi 62)
+                let noWa = barang.noHp || '';
+                if(noWa.startsWith('0')) {
+                    noWa = '62' + noWa.substring(1);
+                }
+                const linkWa = `https://wa.me/${noWa}?text=Halo%20${barang.pelapor},%20saya%20melihat%20laporan%20Anda%20mengenai%20${barang.nama}%20di%20aplikasi%20TEMUKAN.`;
 
                 listBarangContainer.innerHTML += `
                     <div class="barang-item">
@@ -299,8 +351,9 @@
                             </div>
                             <p>${barang.deskripsi}</p>
                             <p><i class="fa-solid fa-location-dot"></i> ${barang.lokasi}</p>
-                            <p><small>Oleh: ${barang.pelapor}</small></p>
-                            <p><small>${tanggal}</small></p>
+                            <p><i class="fa-solid fa-calendar"></i> Kejadian: ${tglKejadian}</p>
+                            <p><small>Oleh: ${barang.pelapor} (${tglLapor})</small></p>
+                            <a href="${linkWa}" target="_blank" class="btn-wa"><i class="fa-brands fa-whatsapp"></i> Hubungi Pelapor</a>
                         </div>
                         <span class="status ${statusClass}">${barang.status}</span>
                     </div>
@@ -326,7 +379,7 @@
                 const fileFoto = document.getElementById('fotoBarang').files[0];
 
                 const prosesSimpan = async (fotoBase64 = '') => {
-                    // Ambil nilai dari radio button (Hilang / Ditemukan)
+                    // Ambil nilai dari radio button
                     const jenisLaporan = document.querySelector('input[name="jenisLaporan"]:checked').value;
 
                     const barangBaru = {
@@ -334,10 +387,13 @@
                         nama: document.getElementById('namaBarang').value,
                         deskripsi: document.getElementById('deskripsi').value,
                         lokasi: document.getElementById('lokasi').value,
+                        tanggalKejadian: document.getElementById('tanggalKejadian').value,
+                        namaPelapor: document.getElementById('namaPelapor').value,
+                        noHp: document.getElementById('noHp').value,
                         foto: fotoBase64,
                         status: 'Proses',
-                        jenis: jenisLaporan, // <-- Menyimpan jenis laporan
-                        pelapor: emailPelapor
+                        jenis: jenisLaporan, 
+                        pelapor: emailPelapor // Menyimpan email yang login
                     };
 
                     try {
