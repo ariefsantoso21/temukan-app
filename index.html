@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TEMUKAN - Sistem Barang Hilang</title>
+    <!-- Memanggil CSS dari folder css/ -->
+    <link rel="stylesheet" href="css/style.css">
+    <!-- Icon FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="logo">
+            <i class="fa-solid fa-magnifying-glass"></i> TEMUKAN
+        </div>
+        <ul class="nav-links">
+            <li><a href="#beranda">Beranda</a></li>
+            <li><a href="#lapor">Lapor Barang</a></li>
+            <li><a href="#daftar">Cari Barang</a></li>
+            <li><a href="#tentang">Tentang</a></li>
+        </ul>
+        <button class="btn-login">Login</button>
+    </nav>
+
+    <!-- Hero Section -->
+    <header id="beranda" class="hero">
+        <div class="hero-text">
+            <h1>TEMUKAN</h1>
+            <h2>Sistem Barang Hilang</h2>
+            <p>Cari, Laporkan, dan Temukan Barang dengan Mudah!</p>
+            <div class="search-bar">
+                <input type="text" id="searchInput" placeholder="Cari barang (misal: tas, HP, dompet...)">
+                <button id="searchBtn"><i class="fa-solid fa-magnifying-glass"></i></button>
+            </div>
+        </div>
+        <div class="hero-image">
+            <div class="ilustrasi-tas">🎒</div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container">
+        
+        <!-- Form Lapor Barang -->
+        <section id="lapor" class="form-section">
+            <h2><i class="fa-solid fa-bullhorn"></i> Lapor Barang Hilang</h2>
+            <form id="formLapor">
+                <div class="input-group">
+                    <label for="namaBarang">Nama Barang *</label>
+                    <input type="text" id="namaBarang" required placeholder="Contoh: Tas Sekolah">
+                </div>
+                <div class="input-group">
+                    <label for="deskripsi">Deskripsi *</label>
+                    <textarea id="deskripsi" required placeholder="Contoh: Tas warna hitam, ada logo SMP"></textarea>
+                </div>
+                <div class="input-group">
+                    <label for="lokasi">Lokasi Terakhir *</label>
+                    <input type="text" id="lokasi" required placeholder="Contoh: Ruang Kelas 10 IPA 1">
+                </div>
+                <div class="input-group">
+                    <label for="fotoBarang">Upload Foto (Opsional)</label>
+                    <input type="file" id="fotoBarang" accept="image/*">
+                </div>
+                <button type="submit" class="btn-kirim"><i class="fa-solid fa-paper-plane"></i> Kirim Laporan</button>
+            </form>
+        </section>
+
+        <!-- Daftar Barang -->
+        <section id="daftar" class="daftar-section">
+            <h2><i class="fa-solid fa-list"></i> Daftar Laporan Barang</h2>
+            <div class="search-local">
+                <input type="text" id="searchLocalInput" placeholder="Cari di daftar...">
+            </div>
+            <div id="listBarang" class="list-barang">
+                <!-- Data akan dirender oleh JS -->
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2026 TEMUKAN - Sistem Barang Hilang. Dibuat untuk Latika 2026.</p>
+    </footer>
+
+    <!-- Memanggil JavaScript dari folder js/ -->
+    <script src="js/app.js"></script>
+    <script src="js/form.js"></script>
+</body>
+</html>
