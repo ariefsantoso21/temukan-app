@@ -33,7 +33,10 @@
             <li><a href="#daftar">Cari Barang</a></li>
             <li><a href="#tentang">Tentang</a></li>
         </ul>
-        <a href="login.html" class="btn-login">Login</a>
+        <!-- Area Login / Profil -->
+        <div id="authArea">
+            <a href="login.html" class="btn-login">Login</a>
+        </div>
     </nav>
 
     <!-- MAIN CONTAINER (Grid Utama) -->
@@ -102,7 +105,6 @@
                     </div>
                 </div>
                 <div class="hero-graphic">
-                    <!-- Gunakan gambar ilustrasi asli di sini, untuk sementara pakai emoji -->
                     <div style="font-size: 120px; text-align: center;">🎒📱</div>
                 </div>
             </div>
@@ -177,6 +179,136 @@
         <p>&copy; 2026 TEMUKAN - Sistem Barang Hilang. Dibuat Oleh Uzaa (SMAN 1 Madiun) 2026.</p>
     </footer>
 
-    <!-- Script Firebase (Tetap gunakan script yang sudah ada sebelumnya) -->
+    <!-- ========================================== -->
+    <!-- LOGIKA FIREBASE (JANGAN DIHAPUS) -->
+    <!-- ========================================== -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getFirestore, collection, addDoc, onSnapshot, query, orderBy } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+        // Konfigurasi Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyB6wbESXwG1x43GCNUTYfYQ-X5KksiLnzE",
+            authDomain: "temukan-app-20b29.firebaseapp.com",
+            projectId: "temukan-app-20b29",
+            storageBucket: "temukan-app-20b29.firebasestorage.app",
+            messagingSenderId: "964187120219",
+            appId: "1:964187120219:web:3e62624f73ac896fd5957e"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        // 1. CEK STATUS LOGIN
+        const userEmail = localStorage.getItem('userEmail');
+        const authArea = document.getElementById('authArea');
+        const formLaporSection = document.getElementById('lapor');
+        const pesanLoginSection = document.getElementById('pesanLogin');
+
+        if (userEmail) {
+            // Jika sudah login
+            authArea.innerHTML = `
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <span style="font-weight: bold; color: #1a56db;"><i class="fa-solid fa-user-circle"></i> ${userEmail}</span>
+                    <button onclick="logout()" style="background: #ef4444; color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; font-weight: bold;">Logout</button>
+                </div>
+            `;
+            if(formLaporSection) formLaporSection.classList.remove('hidden');
+            if(pesanLoginSection) pesanLoginSection.classList.add('hidden');
+        } else {
+            // Jika belum login
+            if(formLaporSection) formLaporSection.classList.add('hidden');
+            if(pesanLoginSection) pesanLoginSection.classList.remove('hidden');
+        }
+
+        // Fungsi Logout
+        window.logout = () => {
+            localStorage.removeItem('userEmail');
+            alert('Anda telah logout.');
+            window.location.reload();
+        };
+
+        // 2. TAMPILKAN DATA REAL-TIME
+        const listBarangContainer = document.getElementById('listBarang');
+        const q = query(collection(db, "laporan_barang"), orderBy("id", "desc"));
+
+        onSnapshot(q, (snapshot) => {
+            listBarangContainer.innerHTML = '';
+            if (snapshot.empty) {
+                listBarangContainer.innerHTML = '<p style="text-align:center; color:#94a3b8;">Belum ada laporan barang.</p>';
+                return;
+            }
+            
+            snapshot.forEach((doc) => {
+                const barang = doc.data();
+                const tanggal = new Date(barang.id).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' });
+                const imgContent = barang.foto ? `<img src="${barang.foto}" class="barang-img">` : `<div class="barang-img">📦</div>`;
+                const statusClass = barang.status === 'Ditemukan' ? 'status-ditemukan' : 'status-proses';
+
+                listBarangContainer.innerHTML += `
+                    <div class="barang-item">
+                        ${imgContent}
+                        <div class="barang-info">
+                            <h3>${barang.nama}</h3>
+                            <p>${barang.deskripsi}</p>
+                            <p><i class="fa-solid fa-location-dot"></i> ${barang.lokasi}</p>
+                            <p><small>Oleh: ${barang.pelapor}</small></p>
+                            <p><small>${tanggal}</small></p>
+                        </div>
+                        <span class="status ${statusClass}">${barang.status}</span>
+                    </div>
+                `;
+            });
+        }, (error) => {
+            console.error("Error ambil data:", error);
+            listBarangContainer.innerHTML = '<p style="text-align:center; color:red;">Gagal memuat data. Cek aturan Firestore.</p>';
+        });
+
+        // 3. LOGIKA FORM LAPOR
+        const formLapor = document.getElementById('formLapor');
+        if (formLapor) {
+            formLapor.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const btn = document.getElementById('btnKirim');
+                btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Mengirim...';
+                btn.disabled = true;
+
+                const emailPelapor = userEmail || 'Anonim';
+                const fileFoto = document.getElementById('fotoBarang').files[0];
+
+                const prosesSimpan = async (fotoBase64 = '') => {
+                    const barangBaru = {
+                        id: Date.now(), 
+                        nama: document.getElementById('namaBarang').value,
+                        deskripsi: document.getElementById('deskripsi').value,
+                        lokasi: document.getElementById('lokasi').value,
+                        foto: fotoBase64,
+                        status: 'Proses',
+                        pelapor: emailPelapor
+                    };
+
+                    try {
+                        await addDoc(collection(db, "laporan_barang"), barangBaru);
+                        alert('Laporan berhasil dikirim!');
+                        formLapor.reset();
+                    } catch (error) {
+                        console.error("Error: ", error);
+                        alert('Gagal mengirim laporan.');
+                    } finally {
+                        btn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Kirim Laporan';
+                        btn.disabled = false;
+                    }
+                };
+
+                if (fileFoto) {
+                    const reader = new FileReader();
+                    reader.onload = (event) => prosesSimpan(event.target.result);
+                    reader.readAsDataURL(fileFoto);
+                } else {
+                    prosesSimpan();
+                }
+            });
+        }
+    </script>
 </body>
 </html>
