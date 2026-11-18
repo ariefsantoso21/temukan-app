@@ -28,7 +28,6 @@
 
 ## Tautan Publikasi (Live Demo)
 - **Website:** [https://temukan-app.vercel.app](https://temukan-app.vercel.app)
-- **Repository:** [https://github.com/ariefsantoso21/temukan-app](https://github.com/ariefsantoso21/temukan-app)
 
 ## Tim Pengembang
 1. **Jauzaa Putri Ardelica** (SMAN 1 Madiun) - *Frontend & Firebase Integration*
