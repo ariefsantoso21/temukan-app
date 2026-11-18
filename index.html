@@ -1,8 +1,137 @@
-    <!-- KODE BARU UNTUK INDEX FIREBASE -->
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TEMUKAN - Sistem Barang Hilang</title>
+    <!-- Memanggil CSS -->
+    <link rel="stylesheet" href="css/style.css">
+    <!-- Icon FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Sedikit CSS tambahan khusus untuk halaman ini -->
+    <style>
+        .hidden { display: none !important; }
+        .user-badge {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: bold;
+            color: #1a56db;
+        }
+        .btn-logout {
+            background-color: #ef4444;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+        .btn-logout:hover { background-color: #dc2626; }
+        .loading-text { text-align: center; color: #64748b; padding: 20px; }
+    </style>
+</head>
+<body>
+
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="logo">
+            <i class="fa-solid fa-magnifying-glass"></i> TEMUKAN
+        </div>
+        <ul class="nav-links">
+            <li><a href="index.html">Beranda</a></li>
+            <li><a href="#daftar">Cari Barang</a></li>
+            <!-- Menu Admin disembunyikan secara default -->
+            <li id="menuAdmin" class="hidden"><a href="dashboard.html">Dashboard Admin</a></li>
+        </ul>
+        
+        <!-- Area Login / Profil User -->
+        <div id="authArea">
+            <a href="login.html" class="btn-login">Login / Daftar</a>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <header id="beranda" class="hero">
+        <div class="hero-text">
+            <h1>TEMUKAN</h1>
+            <h2>Sistem Barang Hilang</h2>
+            <p>Cari, Laporkan, dan Temukan Barang dengan Mudah!</p>
+            <div class="search-bar">
+                <input type="text" id="searchInput" placeholder="Cari barang (misal: tas, HP, dompet...)">
+                <button id="searchBtn"><i class="fa-solid fa-magnifying-glass"></i></button>
+            </div>
+        </div>
+        <div class="hero-image">
+            <div class="ilustrasi-tas">🎒</div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container">
+        
+        <!-- Kolom Kiri: Form Lapor (Hanya muncul jika login) -->
+        <section id="lapor" class="form-section hidden">
+            <h2><i class="fa-solid fa-bullhorn"></i> Lapor Barang</h2>
+            <p style="font-size: 12px; margin-bottom: 15px; color: #64748b;">*Masukkan data barang yang hilang atau ditemukan.</p>
+            <form id="formLapor">
+                <div class="input-group">
+                    <label for="namaBarang">Nama Barang *</label>
+                    <input type="text" id="namaBarang" required placeholder="Contoh: Tas Sekolah">
+                </div>
+                <div class="input-group">
+                    <label for="deskripsi">Deskripsi *</label>
+                    <textarea id="deskripsi" required placeholder="Contoh: Tas warna hitam, ada logo SMP"></textarea>
+                </div>
+                <div class="input-group">
+                    <label for="lokasi">Lokasi Terakhir *</label>
+                    <input type="text" id="lokasi" required placeholder="Contoh: Ruang Kelas 10 IPA 1">
+                </div>
+                <div class="input-group">
+                    <label for="fotoBarang">Upload Foto (Opsional)</label>
+                    <input type="file" id="fotoBarang" accept="image/*">
+                </div>
+                <button type="submit" class="btn-kirim"><i class="fa-solid fa-paper-plane"></i> Kirim Laporan</button>
+            </form>
+        </section>
+
+        <!-- Kolom Kiri: Pesan Jika Belum Login -->
+        <section id="pesanLogin" class="form-section" style="border-top: 5px solid #f59e0b;">
+            <h2><i class="fa-solid fa-lock"></i> Ingin Melapor?</h2>
+            <p style="margin-bottom: 20px;">Anda harus login terlebih dahulu untuk melaporkan barang hilang atau ditemukan.</p>
+            <a href="login.html" class="btn-kirim" style="display: block; text-align: center; text-decoration: none; background-color: #f59e0b;">Login Sekarang</a>
+        </section>
+
+        <!-- Kolom Kanan: Daftar Barang -->
+        <section id="daftar" class="daftar-section">
+            <h2><i class="fa-solid fa-list"></i> Daftar Laporan Barang</h2>
+            <div class="search-local">
+                <input type="text" id="searchLocalInput" placeholder="Cari di daftar...">
+            </div>
+            <div id="listBarang" class="list-barang">
+                <!-- Data akan diisi oleh Firebase -->
+                <p class="loading-text">Memuat data dari server...</p>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2026 TEMUKAN - Sistem Barang Hilang. Dibuat untuk Latika 2026.</p>
+    </footer>
+
+    <!-- ========================================== -->
+    <!-- LOGIKA FIREBASE UNTUK INDEX.HTML -->
+    <!-- ========================================== -->
     <script type="module">
+        // 1. Import Firebase
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getFirestore, collection, addDoc, onSnapshot, query, orderBy } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
+        // 2. Konfigurasi Firebase Anda
         const firebaseConfig = {
             apiKey: "AIzaSyB6wbESXwG1x43GCNUTYfYQ-X5KksiLnzE",
             authDomain: "temukan-app-20b29.firebaseapp.com",
@@ -12,28 +141,69 @@
             appId: "1:964187120219:web:3e62624f73ac896fd5957e"
         };
 
+        // 3. Inisialisasi
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
-        // Fungsi Global agar bisa dipanggil dari form.js
-        window.simpanBarangKeFirebase = async (dataBarang) => {
-            try {
-                await addDoc(collection(db, "laporan_barang"), dataBarang);
-                alert('Laporan berhasil dikirim ke database Firebase!');
-                return true;
-            } catch (e) {
-                console.error("Error: ", e);
-                alert('Gagal mengirim laporan.');
-                return false;
-            }
-        };
+        // ==========================================
+        // LOGIKA FORM LAPOR (Kirim ke Firebase)
+        // ==========================================
+        const formLapor = document.getElementById('formLapor');
+        
+        if (formLapor) {
+            formLapor.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                
+                const btn = formLapor.querySelector('button[type="submit"]');
+                btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Mengirim...';
+                btn.disabled = true;
 
-        // Tampilkan Data secara Real-time
-        const q = query(collection(db, "laporan_barang"), orderBy("id", "desc"));
+                const emailPelapor = localStorage.getItem('userEmail') || 'Anonim';
+                const fileFoto = document.getElementById('fotoBarang').files[0];
+
+                const prosesSimpan = async (fotoBase64 = '') => {
+                    const barangBaru = {
+                        id: Date.now(), 
+                        nama: document.getElementById('namaBarang').value,
+                        deskripsi: document.getElementById('deskripsi').value,
+                        lokasi: document.getElementById('lokasi').value,
+                        foto: fotoBase64,
+                        status: 'Proses',
+                        pelapor: emailPelapor
+                    };
+
+                    try {
+                        await addDoc(collection(db, "laporan_barang"), barangBaru);
+                        alert('Laporan berhasil dikirim ke database!');
+                        formLapor.reset();
+                    } catch (error) {
+                        console.error("Error: ", error);
+                        alert('Gagal mengirim laporan. Cek koneksi internet.');
+                    } finally {
+                        btn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Kirim Laporan';
+                        btn.disabled = false;
+                    }
+                };
+
+                if (fileFoto) {
+                    const reader = new FileReader();
+                    reader.onload = (event) => prosesSimpan(event.target.result);
+                    reader.readAsDataURL(fileFoto);
+                } else {
+                    prosesSimpan();
+                }
+            });
+        }
+
+        // ==========================================
+        // LOGIKA MENAMPILKAN DATA (Real-time)
+        // ==========================================
         const listBarangContainer = document.getElementById('listBarang');
+        const q = query(collection(db, "laporan_barang"), orderBy("id", "desc"));
 
         onSnapshot(q, (snapshot) => {
             listBarangContainer.innerHTML = '';
+            
             if (snapshot.empty) {
                 listBarangContainer.innerHTML = '<p style="text-align:center; color:#94a3b8;">Belum ada laporan barang.</p>';
                 return;
@@ -41,8 +211,6 @@
             
             snapshot.forEach((doc) => {
                 const barang = doc.data();
-                
-                // Format Tampilan (Sama seperti sebelumnya)
                 const tanggal = new Date(barang.id).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' });
                 const imgContent = barang.foto ? `<img src="${barang.foto}" class="barang-img">` : `<div class="barang-img">📦</div>`;
                 const statusClass = barang.status === 'Ditemukan' ? 'status-ditemukan' : 'status-proses';
@@ -54,6 +222,7 @@
                             <h3>${barang.nama}</h3>
                             <p>${barang.deskripsi}</p>
                             <p><i class="fa-solid fa-location-dot"></i> ${barang.lokasi}</p>
+                            <p><small>Dilaporkan oleh: ${barang.pelapor}</small></p>
                             <p><small>${tanggal}</small></p>
                         </div>
                         <span class="status ${statusClass}">${barang.status}</span>
@@ -62,24 +231,63 @@
             });
         });
 
-        // Cek Login
+        // ==========================================
+        // CEK STATUS LOGIN USER
+        // ==========================================
+        const userEmail = localStorage.getItem('userEmail');
         const authArea = document.getElementById('authArea');
         const formLaporSection = document.getElementById('lapor');
         const pesanLoginSection = document.getElementById('pesanLogin');
-        const userEmail = localStorage.getItem('userEmail');
 
         if (userEmail) {
+            // Jika sudah login
             authArea.innerHTML = `
-                <span style="margin-right: 10px; font-weight: bold; color: #1a56db;">
-                    <i class="fa-solid fa-user"></i> ${userEmail}
-                </span>
-                <button onclick="localStorage.removeItem('userEmail'); location.reload();" class="btn-login" style="background-color: #ef4444;">Logout</button>
+                <div class="user-badge">
+                    <span><i class="fa-solid fa-user-circle"></i> ${userEmail}</span>
+                    <button onclick="logout()" class="btn-logout">Logout</button>
+                </div>
             `;
-            if(formLaporSection) formLaporSection.style.display = 'block';
-            if(pesanLoginSection) pesanLoginSection.style.display = 'none';
+            if(formLaporSection) formLaporSection.classList.remove('hidden');
+            if(pesanLoginSection) pesanLoginSection.classList.add('hidden');
         } else {
-            if(formLaporSection) formLaporSection.style.display = 'none';
-            if(pesanLoginSection) pesanLoginSection.style.display = 'block';
+            // Jika belum login
+            if(formLaporSection) formLaporSection.classList.add('hidden');
+            if(pesanLoginSection) pesanLoginSection.classList.remove('hidden');
         }
+
+        // Fungsi Global Logout
+        window.logout = () => {
+            localStorage.removeItem('userEmail');
+            alert('Anda telah logout.');
+            window.location.reload();
+        };
+
+        // ==========================================
+        // FITUR PENCARIAN (Search)
+        // ==========================================
+        document.getElementById('searchBtn').addEventListener('click', () => {
+            const keyword = document.getElementById('searchInput').value;
+            document.getElementById('searchLocalInput').value = keyword;
+            document.getElementById('daftar').scrollIntoView({ behavior: 'smooth' });
+            
+            // Trigger filter manual
+            const event = new Event('input');
+            document.getElementById('searchLocalInput').dispatchEvent(event);
+        });
+
+        document.getElementById('searchLocalInput').addEventListener('input', (e) => {
+            const keyword = e.target.value.toLowerCase();
+            const items = document.querySelectorAll('.barang-item');
+            
+            items.forEach(item => {
+                const text = item.innerText.toLowerCase();
+                if (text.includes(keyword)) {
+                    item.style.display = 'flex';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        });
     </script>
-    <script src="js/form.js"></script>
+</body>
+</html>
