@@ -17,7 +17,31 @@
         .user-badge { display: flex; align-items: center; gap: 10px; font-weight: bold; color: #1a56db; }
         .btn-logout { background-color: #ef4444; color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; font-weight: bold; }
         .btn-logout:hover { background-color: #dc2626; }
-        .loading-text { text-align: center; color: #64748b; padding: 20px; }
+        
+        /* CSS untuk Pilihan Radio Button */
+        .radio-group {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 15px;
+            background: #f8fafc;
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+        }
+        .radio-group label {
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            color: #1e293b;
+        }
+        .radio-group input[type="radio"] {
+            cursor: pointer;
+            width: 16px;
+            height: 16px;
+        }
     </style>
 </head>
 <body>
@@ -112,33 +136,46 @@
             <!-- Grid Bawah (Form & Daftar) -->
             <div class="action-grid">
                 
-                <!-- Kolom Form -->
+                <!-- Kolom Form (Lapor) -->
                 <div id="lapor" class="card card-dark-blue-header hidden">
-                    <div class="card-header">Lapor Barang Hilang</div>
+                    <div class="card-header">Lapor Barang</div>
                     <div class="card-body">
-                        <form id="formLapor" style="display: flex; gap: 15px;">
-                            <!-- Area Foto (Kiri) -->
-                            <div class="photo-upload" style="width: 100px;">
-                                <label for="fotoBarang" style="cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; background: #f0f4f8; border: 2px dashed #cbd5e1; border-radius: 8px;">
-                                    <span style="font-size: 30px;">🎒</span>
-                                    <small style="font-size: 10px; text-align: center; margin-top: 5px;">Upload<br>Foto</small>
-                                </label>
-                                <input type="file" id="fotoBarang" accept="image/*" style="display: none;">
-                            </div>
+                        <form id="formLapor">
                             
-                            <!-- Area Input (Kanan) -->
-                            <div style="flex: 1; display: flex; flex-direction: column; gap: 10px;">
-                                <div>
-                                    <label style="font-size: 12px;">Nama Barang *</label>
-                                    <input type="text" id="namaBarang" required placeholder="Tas Sekolah" style="width: 100%; padding: 8px; border: 1px solid #cbd5e1; border-radius: 5px;">
+                            <!-- Pilihan Jenis Laporan -->
+                            <div class="radio-group">
+                                <label>
+                                    <input type="radio" name="jenisLaporan" value="Hilang" checked> Barang Hilang
+                                </label>
+                                <label>
+                                    <input type="radio" name="jenisLaporan" value="Ditemukan"> Barang Ditemukan
+                                </label>
+                            </div>
+
+                            <div style="display: flex; gap: 15px;">
+                                <!-- Area Foto (Kiri) -->
+                                <div class="photo-upload" style="width: 100px;">
+                                    <label for="fotoBarang" style="cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; background: #f0f4f8; border: 2px dashed #cbd5e1; border-radius: 8px;">
+                                        <span style="font-size: 30px;">🎒</span>
+                                        <small style="font-size: 10px; text-align: center; margin-top: 5px;">Upload<br>Foto</small>
+                                    </label>
+                                    <input type="file" id="fotoBarang" accept="image/*" style="display: none;">
                                 </div>
-                                <div>
-                                    <label style="font-size: 12px;">Deskripsi *</label>
-                                    <input type="text" id="deskripsi" required placeholder="Tas warna hitam, ada logo SMP" style="width: 100%; padding: 8px; border: 1px solid #cbd5e1; border-radius: 5px;">
-                                </div>
-                                <div>
-                                    <label style="font-size: 12px;">Lokasi Terakhir *</label>
-                                    <input type="text" id="lokasi" required placeholder="Ruang Kelas 10 IPA 1" style="width: 100%; padding: 8px; border: 1px solid #cbd5e1; border-radius: 5px;">
+                                
+                                <!-- Area Input (Kanan) -->
+                                <div style="flex: 1; display: flex; flex-direction: column; gap: 10px;">
+                                    <div>
+                                        <label style="font-size: 12px;">Nama Barang *</label>
+                                        <input type="text" id="namaBarang" required placeholder="Tas Sekolah" style="width: 100%; padding: 8px; border: 1px solid #cbd5e1; border-radius: 5px;">
+                                    </div>
+                                    <div>
+                                        <label style="font-size: 12px;">Deskripsi *</label>
+                                        <input type="text" id="deskripsi" required placeholder="Tas warna hitam, ada logo SMP" style="width: 100%; padding: 8px; border: 1px solid #cbd5e1; border-radius: 5px;">
+                                    </div>
+                                    <div>
+                                        <label style="font-size: 12px;">Lokasi Terakhir *</label>
+                                        <input type="text" id="lokasi" required placeholder="Ruang Kelas 10 IPA 1" style="width: 100%; padding: 8px; border: 1px solid #cbd5e1; border-radius: 5px;">
+                                    </div>
                                 </div>
                             </div>
                         </form>
@@ -199,7 +236,9 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
+        // ==========================================
         // 1. CEK STATUS LOGIN
+        // ==========================================
         const userEmail = localStorage.getItem('userEmail');
         const authArea = document.getElementById('authArea');
         const formLaporSection = document.getElementById('lapor');
@@ -228,7 +267,9 @@
             window.location.reload();
         };
 
+        // ==========================================
         // 2. TAMPILKAN DATA REAL-TIME
+        // ==========================================
         const listBarangContainer = document.getElementById('listBarang');
         const q = query(collection(db, "laporan_barang"), orderBy("id", "desc"));
 
@@ -244,12 +285,18 @@
                 const tanggal = new Date(barang.id).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' });
                 const imgContent = barang.foto ? `<img src="${barang.foto}" class="barang-img">` : `<div class="barang-img">📦</div>`;
                 const statusClass = barang.status === 'Ditemukan' ? 'status-ditemukan' : 'status-proses';
+                
+                // Tentukan warna label jenis laporan
+                const jenisClass = barang.jenis === 'Ditemukan' ? 'status-ditemukan' : 'status-proses';
 
                 listBarangContainer.innerHTML += `
                     <div class="barang-item">
                         ${imgContent}
                         <div class="barang-info">
-                            <h3>${barang.nama}</h3>
+                            <div style="display: flex; gap: 8px; align-items: center; margin-bottom: 5px;">
+                                <h3 style="margin: 0;">${barang.nama}</h3>
+                                <span class="status ${jenisClass}" style="font-size: 10px; padding: 2px 8px;">${barang.jenis || 'Hilang'}</span>
+                            </div>
                             <p>${barang.deskripsi}</p>
                             <p><i class="fa-solid fa-location-dot"></i> ${barang.lokasi}</p>
                             <p><small>Oleh: ${barang.pelapor}</small></p>
@@ -264,7 +311,9 @@
             listBarangContainer.innerHTML = '<p style="text-align:center; color:red;">Gagal memuat data. Cek aturan Firestore.</p>';
         });
 
+        // ==========================================
         // 3. LOGIKA FORM LAPOR
+        // ==========================================
         const formLapor = document.getElementById('formLapor');
         if (formLapor) {
             formLapor.addEventListener('submit', async (e) => {
@@ -277,6 +326,9 @@
                 const fileFoto = document.getElementById('fotoBarang').files[0];
 
                 const prosesSimpan = async (fotoBase64 = '') => {
+                    // Ambil nilai dari radio button (Hilang / Ditemukan)
+                    const jenisLaporan = document.querySelector('input[name="jenisLaporan"]:checked').value;
+
                     const barangBaru = {
                         id: Date.now(), 
                         nama: document.getElementById('namaBarang').value,
@@ -284,6 +336,7 @@
                         lokasi: document.getElementById('lokasi').value,
                         foto: fotoBase64,
                         status: 'Proses',
+                        jenis: jenisLaporan, // <-- Menyimpan jenis laporan
                         pelapor: emailPelapor
                     };
 
